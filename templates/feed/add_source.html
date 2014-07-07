@@ -1,0 +1,11 @@
+{% extends "base_template.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="title">Add a feed</div>
+<form action="{% url 'feed:add_source' %}" method='POST'>
+  {% csrf_token %}
+    <input type="text" name="url"></input>
+    <input type="submit"></input>
+</form>
+{% endblock %}
