@@ -1,5 +1,6 @@
 import feedparser
 import datetime
+import urllib2
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -30,13 +31,14 @@ def add_source(request):
         if request.META['REQUEST_METHOD'] == 'GET':
             return render(request, 'feed/add_source.html', {})
         else:
-            feed = feedparser.parse(request.POST['url'])
+            url = urllib2.unquote(request.POST['url']).decode("utf8")
+            feed = feedparser.parse(url)
             source = Source(owner=request.user, name = feed.feed.title, url = request.POST['url'])
             source.save()
             for i in range(0,9):
                 item = Item(source = source, url = feed.entries[i].link)
                 item.save()
-            return HttpResponseRedirect(reverse('feed:display')) 
+            return HttpResponseRedirect(reverse('feed:add_source')) 
     else:
         return HttpResponseRedirect(reverse('archives:index'))
 
